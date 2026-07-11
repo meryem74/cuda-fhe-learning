@@ -6,7 +6,7 @@ Sabancı University).
 
 ## Contents
 
-**CUDA fundamentals** (`01_cuda_temelleri.ipynb`, `*.cu`)
+**CUDA fundamentals** (`01_cuda_basics.ipynb`, `*.cu`)
 
 - `hello.cu` — kernel launch, thread/block indexing
 - `vector_add.cu` — host/device memory management, cudaMemcpy
@@ -15,7 +15,7 @@ Sabancı University).
 **Result:** 1024×1024 matrix multiplication on a Tesla T4:
 CPU 3587 ms → GPU 5.24 ms (**684.6× speedup**)
 
-**Orion FHE framework** (`02_orion_kurulum.ipynb`)
+**Orion FHE framework** (`02_orion_setup.ipynb`)
 
 - Built the [Orion](https://github.com/baahl-nyu/orion) framework from source
   (Go 1.22 + Lattigo backend) and ran encrypted MNIST inference (LoLA CNN).
