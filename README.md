@@ -52,10 +52,3 @@ MAE = 0.0045 (~7.8 bits of precision), single encrypted inference in 0.62 s.
 Google Colab — Tesla T4 (CUDA 12.8) for CUDA exercises, CPU runtime for
 Orion and OpenFHE.
 
-## Next steps
-
-- Shared-memory (tiled) matrix multiplication
-- A CUDA NTT (Number Theoretic Transform) kernel — the core primitive behind
-  polynomial multiplication in CKKS — and studying
-  [HEonGPU](https://github.com/Alisah-Ozcan/HEonGPU), the GPU FHE library our
-  group develops on
