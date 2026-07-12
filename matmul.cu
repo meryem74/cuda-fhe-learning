@@ -3,8 +3,6 @@
 #include <cmath>
 #include <chrono>
 
-// Naive GPU matris carpimi: her thread, C'nin TEK BIR hucresini hesaplar.
-// C[row][col] = A'nin row. satiri ile B'nin col. sutununun ic carpimi.
 __global__ void matmulGPU(const float* A, const float* B, float* C, int N)
 {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
@@ -18,7 +16,6 @@ __global__ void matmulGPU(const float* A, const float* B, float* C, int N)
     }
 }
 
-// Karsilastirma icin klasik CPU versiyonu (3 ic ice dongu).
 void matmulCPU(const float* A, const float* B, float* C, int N)
 {
     for (int i = 0; i < N; i++)
@@ -32,26 +29,24 @@ void matmulCPU(const float* A, const float* B, float* C, int N)
 
 int main()
 {
-    const int N = 1024;                  // 1024x1024 matris
+    const int N = 1024;                  
     size_t bytes = N * N * sizeof(float);
 
     float *h_A = (float*)malloc(bytes);
     float *h_B = (float*)malloc(bytes);
-    float *h_C = (float*)malloc(bytes);      // GPU sonucu
-    float *h_ref = (float*)malloc(bytes);    // CPU sonucu (referans)
+    float *h_C = (float*)malloc(bytes);      
+    float *h_ref = (float*)malloc(bytes);    
 
     for (int i = 0; i < N * N; i++) {
         h_A[i] = (float)(rand() % 10);
         h_B[i] = (float)(rand() % 10);
     }
 
-    // ---------- CPU olcumu ----------
     auto t0 = std::chrono::high_resolution_clock::now();
     matmulCPU(h_A, h_B, h_ref, N);
     auto t1 = std::chrono::high_resolution_clock::now();
     double cpu_ms = std::chrono::duration<double, std::milli>(t1 - t0).count();
 
-    // ---------- GPU hazirlik ----------
     float *d_A, *d_B, *d_C;
     cudaMalloc(&d_A, bytes);
     cudaMalloc(&d_B, bytes);
@@ -59,11 +54,10 @@ int main()
     cudaMemcpy(d_A, h_A, bytes, cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, h_B, bytes, cudaMemcpyHostToDevice);
 
-    // 2D grid: 16x16 = 256 thread'lik block'lar, 64x64 block'luk grid
     dim3 blockDim(16, 16);
     dim3 gridDim((N + 15) / 16, (N + 15) / 16);
 
-    // ---------- cudaEvent ile GPU olcumu ----------
+
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
@@ -78,7 +72,7 @@ int main()
 
     cudaMemcpy(h_C, d_C, bytes, cudaMemcpyDeviceToHost);
 
-    // ---------- Dogrulama ----------
+
     bool ok = true;
     for (int i = 0; i < N * N; i++)
         if (fabs(h_C[i] - h_ref[i]) > 1e-3) { ok = false; break; }
